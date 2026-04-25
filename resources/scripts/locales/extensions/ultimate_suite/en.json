@@ -1,0 +1,28 @@
+{
+    "ultimate_suite": {
+        "language": {
+            "title": "Panel Language"
+        },
+        "players": {
+            "title": "Online Players",
+            "refresh": "Refresh List",
+            "loading": "Refreshing...",
+            "none": "No players online.",
+            "error_fetch": "Failed to fetch players.",
+            "success_action": "Successfully executed {{action}} on {{player}}.",
+            "error_action": "Failed to execute command.",
+            "confirm_title": "Confirm {{action}}",
+            "confirm_btn": "Confirm {{action}}",
+            "confirm_msg": "Are you sure you want to {{action}} {{player}} from the server?"
+        },
+        "version": {
+            "title": "Version Manager",
+            "description": "Select the server type and version you want to install. This will trigger a server reinstall.",
+            "type": "Server Type",
+            "version": "Minecraft Version",
+            "update_btn": "Update and Reinstall",
+            "success": "Server version updated. Reinstalling now...",
+            "error": "Failed to update server version."
+        }
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "ultimate_suite": {
+        "language": {
+            "title": "Idioma del Panel"
+        },
+        "players": {
+            "title": "Jugadores en Línea",
+            "refresh": "Actualizar Lista",
+            "loading": "Actualizando...",
+            "none": "No hay jugadores en línea.",
+            "error_fetch": "Error al obtener jugadores.",
+            "success_action": "Se ejecutó {{action}} correctamente en {{player}}.",
+            "error_action": "Error al ejecutar el comando.",
+            "confirm_title": "Confirmar {{action}}",
+            "confirm_btn": "Confirmar {{action}}",
+            "confirm_msg": "¿Estás seguro de que deseas ejecutar {{action}} sobre {{player}}?"
+        },
+        "version": {
+            "title": "Gestor de Versiones",
+            "description": "Selecciona el tipo de servidor y la versión que deseas instalar. Esto iniciará una reinstalación del servidor.",
+            "type": "Tipo de Servidor",
+            "version": "Versión de Minecraft",
+            "update_btn": "Actualizar y Reinstalar",
+            "success": "Versión actualizada. Reinstalando el servidor...",
+            "error": "Error al actualizar la versión."
+        }
+    }
+}
