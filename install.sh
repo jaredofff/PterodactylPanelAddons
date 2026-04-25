@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =================================================================
-#  Pterodactyl Ultimate Suite - All-in-One Installer (Hardened)
+#  Pterodactyl Ultimate Suite - All-in-One Installer (Ultimate Fix)
 # =================================================================
 
 set -e
@@ -17,7 +17,7 @@ NC='\033[0m'
 PTERO_PATH="/var/www/pterodactyl"
 EXT_SOURCE="./UltimateSuite"
 
-echo -e "${BLUE}=== Pterodactyl Ultimate Suite Installer (Hardened) ===${NC}"
+echo -e "${BLUE}=== Pterodactyl Ultimate Suite Installer (Final Fix) ===${NC}"
 
 # Validar Root
 if [[ $EUID -ne 0 ]]; then
@@ -100,26 +100,31 @@ if ! command -v npm &> /dev/null; then
 fi
 
 # GESTIÓN DE MEMORIA (SWAP TEMPORAL)
-# Esto evita que el build falle en servidores con poca RAM
 if [ ! -f /swapfile_ptero ]; then
-    echo -e "${YELLOW}Creando SWAP temporal (2GB) para evitar crashes de memoria...${NC}"
+    echo -e "${YELLOW}Creando SWAP temporal (2GB)...${NC}"
     fallocate -l 2G /swapfile_ptero || dd if=/dev/zero of=/swapfile_ptero bs=1M count=2048
     chmod 600 /swapfile_ptero
     mkswap /swapfile_ptero
     swapon /swapfile_ptero
-    echo -e "${GREEN}SWAP activado.${NC}"
 fi
 
-# Frontend
-echo -e "${BLUE}Limpiando entorno de Node...${NC}"
+# Frontend - LIMPIEZA AGRESIVA
+echo -e "${BLUE}Limpiando entorno y caché de NPM...${NC}"
+npm cache clean --force
 rm -rf node_modules package-lock.json
 
-echo -e "${BLUE}Instalando dependencias (Forced Mode)...${NC}"
-# Usamos --force y --legacy-peer-deps para resolver conflictos agresivamente
+# CONFIGURACIÓN GLOBAL PARA EVITAR ERESOLVE
+npm config set legacy-peer-deps true
+
+# INSTALACIÓN MANUAL DE DEPENDENCIAS CRÍTICAS
+echo -e "${BLUE}Inyectando dependencias de Ultimate Suite en el panel...${NC}"
+npm install axios react-i18next i18next --save --force --legacy-peer-deps
+
+# INSTALACIÓN GENERAL
+echo -e "${BLUE}Instalando el resto de dependencias...${NC}"
 npm install --force --legacy-peer-deps
 
 echo -e "${BLUE}Compilando assets de producción...${NC}"
-# Aumentamos el límite de memoria de Node para el build
 export NODE_OPTIONS="--max-old-space-size=2048"
 npm run build
 
@@ -127,7 +132,6 @@ npm run build
 if [ -f /swapfile_ptero ]; then
     swapoff /swapfile_ptero
     rm /swapfile_ptero
-    echo -e "${YELLOW}SWAP temporal removido.${NC}"
 fi
 
 # Permisos
