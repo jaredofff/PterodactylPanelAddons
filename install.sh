@@ -33,7 +33,6 @@ read -p "Opción: " OPT
 case $OPT in
     1)
         echo -e "${YELLOW}Iniciando instalación oficial de Pterodactyl...${NC}"
-        # Usamos el instalador oficial de la comunidad para asegurar que el panel quede perfecto
         bash <(curl -s https://pterodactyl-installer.se) <<EOF
 0
 0
@@ -50,7 +49,6 @@ y
 y
 EOF
         echo -e "${GREEN}Panel instalado. Procediendo con el Addon...${NC}"
-        # Continuar con el addon...
         ;;
     2)
         if [ ! -d "$PTERO_PATH" ]; then
@@ -78,12 +76,23 @@ cp -r "$EXT_SOURCE/database" "$PTERO_PATH/"
 
 cd "$PTERO_PATH"
 
+# Permitir Composer como root
+export COMPOSER_ALLOW_SUPERUSER=1
+
 # Ejecutar comandos de Laravel
 composer install --no-dev --optimize-autoloader
 php artisan migrate --force
 php artisan optimize:clear
 
+# Verificar e instalar Node.js/NPM si falta
+if ! command -v npm &> /dev/null; then
+    echo -e "${YELLOW}NPM no detectado. Instalando Node.js 18 y NPM...${NC}"
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+    apt-get install -y nodejs
+fi
+
 # Frontend
+echo -e "${BLUE}Compilando assets (esto puede tardar unos minutos)...${NC}"
 npm install
 npm run build
 
