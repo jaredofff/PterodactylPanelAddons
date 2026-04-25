@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =================================================================
-#  Pterodactyl Ultimate Suite - All-in-One Installer (Ultimate Fix)
+#  Pterodactyl Ultimate Suite - All-in-One Installer (Interactive)
 # =================================================================
 
 set -e
@@ -17,7 +17,7 @@ NC='\033[0m'
 PTERO_PATH="/var/www/pterodactyl"
 EXT_SOURCE="./UltimateSuite"
 
-echo -e "${BLUE}=== Pterodactyl Ultimate Suite Installer (Final Fix) ===${NC}"
+echo -e "${BLUE}=== Pterodactyl Ultimate Suite Installer ===${NC}"
 
 # Validar Root
 if [[ $EUID -ne 0 ]]; then
@@ -32,23 +32,12 @@ read -p "Opción: " OPT
 
 case $OPT in
     1)
-        echo -e "${YELLOW}Iniciando instalación oficial de Pterodactyl...${NC}"
-        bash <(curl -s https://pterodactyl-installer.se) <<EOF
-0
-0
-admin
-admin
-admin
-admin
-admin@example.com
-password
-$HOSTNAME
-$HOSTNAME
-y
-y
-y
-EOF
-        echo -e "${GREEN}Panel instalado. Procediendo con el Addon...${NC}"
+        echo -e "${YELLOW}Iniciando instalador oficial interactivo...${NC}"
+        echo -e "${YELLOW}Por favor, completa los pasos del panel en pantalla.${NC}"
+        # Dejamos que el script oficial sea interactivo para mayor compatibilidad con Debian/Ubuntu
+        bash <(curl -s https://pterodactyl-installer.se)
+        
+        echo -e "${GREEN}Instalación oficial finalizada. Procediendo con el Addon...${NC}"
         ;;
     2)
         if [ ! -d "$PTERO_PATH" ]; then
@@ -62,6 +51,12 @@ EOF
 esac
 
 # Lógica de instalación del Addon
+if [ ! -d "$PTERO_PATH" ]; then
+    echo -e "${RED}Error crítico: No se detectó la carpeta del panel en $PTERO_PATH${NC}"
+    echo -e "${RED}Asegúrate de que la instalación oficial terminó correctamente.${NC}"
+    exit 1
+fi
+
 echo -e "${BLUE}Instalando Ultimate Suite Addon...${NC}"
 
 # Backup
@@ -108,16 +103,16 @@ if [ ! -f /swapfile_ptero ]; then
     swapon /swapfile_ptero
 fi
 
-# Frontend - LIMPIEZA AGRESIVA
+# Frontend
 echo -e "${BLUE}Limpiando entorno y caché de NPM...${NC}"
-npm cache clean --force
+npm cache clean --force || true
 rm -rf node_modules package-lock.json
 
 # CONFIGURACIÓN GLOBAL PARA EVITAR ERESOLVE
 npm config set legacy-peer-deps true
 
 # INSTALACIÓN MANUAL DE DEPENDENCIAS CRÍTICAS
-echo -e "${BLUE}Inyectando dependencias de Ultimate Suite en el panel...${NC}"
+echo -e "${BLUE}Inyectando dependencias en el panel...${NC}"
 npm install axios react-i18next i18next --save --force --legacy-peer-deps
 
 # INSTALACIÓN GENERAL
