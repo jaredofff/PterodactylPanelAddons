@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ServerContext } from '@/state/server';
-import { Spinner } from '@/components/elements/Spinner';
-import { useFlash } from '@/plugins/useFlash';
+import Spinner from '@/components/elements/Spinner';
+import useFlash from '@/plugins/useFlash';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import { useTranslation } from 'react-i18next';
 

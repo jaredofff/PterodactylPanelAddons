@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
 import { ServerContext } from '@/state/server';
-import { useFlash } from '@/plugins/useFlash';
+import useFlash from '@/plugins/useFlash';
 import Button from '@/components/elements/Button';
 import { useTranslation } from 'react-i18next';
 
