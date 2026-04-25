@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =================================================================
-#  Pterodactyl Ultimate Suite - All-in-One Installer
+#  Pterodactyl Ultimate Suite - All-in-One Installer (Hardened)
 # =================================================================
 
 set -e
@@ -17,7 +17,7 @@ NC='\033[0m'
 PTERO_PATH="/var/www/pterodactyl"
 EXT_SOURCE="./UltimateSuite"
 
-echo -e "${BLUE}=== Pterodactyl Ultimate Suite Installer ===${NC}"
+echo -e "${BLUE}=== Pterodactyl Ultimate Suite Installer (Hardened) ===${NC}"
 
 # Validar Root
 if [[ $EUID -ne 0 ]]; then
@@ -87,22 +87,48 @@ cd "$PTERO_PATH"
 export COMPOSER_ALLOW_SUPERUSER=1
 
 # Ejecutar comandos de Laravel
+echo -e "${BLUE}Optimizando Backend...${NC}"
 composer install --no-dev --optimize-autoloader
 php artisan migrate --force
 php artisan optimize:clear
 
 # Verificar e instalar Node.js/NPM si falta
 if ! command -v npm &> /dev/null; then
-    echo -e "${YELLOW}NPM no detectado. Instalando Node.js 18 y NPM...${NC}"
+    echo -e "${YELLOW}NPM no detectado. Instalando Node.js 18...${NC}"
     curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
     apt-get install -y nodejs
 fi
 
+# GESTIÓN DE MEMORIA (SWAP TEMPORAL)
+# Esto evita que el build falle en servidores con poca RAM
+if [ ! -f /swapfile_ptero ]; then
+    echo -e "${YELLOW}Creando SWAP temporal (2GB) para evitar crashes de memoria...${NC}"
+    fallocate -l 2G /swapfile_ptero || dd if=/dev/zero of=/swapfile_ptero bs=1M count=2048
+    chmod 600 /swapfile_ptero
+    mkswap /swapfile_ptero
+    swapon /swapfile_ptero
+    echo -e "${GREEN}SWAP activado.${NC}"
+fi
+
 # Frontend
-echo -e "${BLUE}Compilando assets (esto puede tardar unos minutos)...${NC}"
-# Usamos --legacy-peer-deps para evitar conflictos con React 16 del panel original
-npm install --legacy-peer-deps
+echo -e "${BLUE}Limpiando entorno de Node...${NC}"
+rm -rf node_modules package-lock.json
+
+echo -e "${BLUE}Instalando dependencias (Forced Mode)...${NC}"
+# Usamos --force y --legacy-peer-deps para resolver conflictos agresivamente
+npm install --force --legacy-peer-deps
+
+echo -e "${BLUE}Compilando assets de producción...${NC}"
+# Aumentamos el límite de memoria de Node para el build
+export NODE_OPTIONS="--max-old-space-size=2048"
 npm run build
+
+# Desactivar SWAP temporal al finalizar
+if [ -f /swapfile_ptero ]; then
+    swapoff /swapfile_ptero
+    rm /swapfile_ptero
+    echo -e "${YELLOW}SWAP temporal removido.${NC}"
+fi
 
 # Permisos
 chown -R www-data:www-data "$PTERO_PATH"
