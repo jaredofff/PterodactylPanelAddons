@@ -69,10 +69,17 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 cp -r "$PTERO_PATH" "/var/www/pterodactyl_backup_$TIMESTAMP"
 
 # Copiar archivos
-cp -r "$EXT_SOURCE/app" "$PTERO_PATH/"
-cp -r "$EXT_SOURCE/resources" "$PTERO_PATH/"
-cp -r "$EXT_SOURCE/routes" "$PTERO_PATH/"
-cp -r "$EXT_SOURCE/database" "$PTERO_PATH/"
+if [ -d "$EXT_SOURCE" ]; then
+    cp -r "$EXT_SOURCE/app" "$PTERO_PATH/"
+    cp -r "$EXT_SOURCE/resources" "$PTERO_PATH/"
+    cp -r "$EXT_SOURCE/routes" "$PTERO_PATH/"
+    cp -r "$EXT_SOURCE/database" "$PTERO_PATH/"
+else
+    cp -r "../app" "$PTERO_PATH/"
+    cp -r "../resources" "$PTERO_PATH/"
+    cp -r "../routes" "$PTERO_PATH/"
+    cp -r "../database" "$PTERO_PATH/"
+fi
 
 cd "$PTERO_PATH"
 
@@ -93,7 +100,8 @@ fi
 
 # Frontend
 echo -e "${BLUE}Compilando assets (esto puede tardar unos minutos)...${NC}"
-npm install
+# Usamos --legacy-peer-deps para evitar conflictos con React 16 del panel original
+npm install --legacy-peer-deps
 npm run build
 
 # Permisos
