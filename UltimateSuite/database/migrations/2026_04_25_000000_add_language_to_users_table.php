@@ -8,15 +8,19 @@ class AddLanguageToUsersTable extends Migration
 {
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('language', 5)->default('en')->after('email');
-        });
+        if (!Schema::hasColumn('users', 'language')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('language', 5)->default('en')->after('email');
+            });
+        }
     }
 
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('language');
-        });
+        if (Schema::hasColumn('users', 'language')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('language');
+            });
+        }
     }
 }
