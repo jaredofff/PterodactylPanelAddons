@@ -2,15 +2,21 @@
 
 Follow these steps to deploy the Ultimate Suite on your Pterodactyl Panel.
 
+## 📋 Prerequisites
+If your server is fresh, make sure you have **Git** installed:
+```bash
+sudo apt update && sudo apt install git -y
+```
+
 ## 📥 1. Cloning the Repository
-First, clone this repository to your server:
+Clone this repository to your server:
 ```bash
 git clone https://github.com/jaredofff/PterodactylPanelAddons.git
 cd PterodactylPanelAddons
 ```
 
 ## 🚀 2. Running the Installer
-The installer handles everything: dependencies, database, and frontend compilation.
+The installer handles everything: dependencies, database, Node.js installation, and frontend compilation.
 ```bash
 chmod +x install.sh
 sudo ./install.sh
