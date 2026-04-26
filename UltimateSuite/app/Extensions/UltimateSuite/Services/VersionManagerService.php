@@ -31,9 +31,9 @@ class VersionManagerService
         $typeVar = $server->variables()->where('env_variable', 'like', '%TYPE%')->first();
         $urlVar = $server->variables()->where('env_variable', 'like', '%URL%')->first();
 
-        if ($versionVar) $this->variableValidatorService->handle($server->id, $versionVar->id, $version);
-        if ($typeVar) $this->variableValidatorService->handle($server->id, $typeVar->id, $type);
-        if ($urlVar && $downloadUrl) $this->variableValidatorService->handle($server->id, $urlVar->id, $downloadUrl);
+        if ($versionVar) $this->variableValidatorService->handle($server, [['id' => $versionVar->id, 'value' => $version]]);
+        if ($typeVar) $this->variableValidatorService->handle($server, [['id' => $typeVar->id, 'value' => $type]]);
+        if ($urlVar && $downloadUrl) $this->variableValidatorService->handle($server, [['id' => $urlVar->id, 'value' => $downloadUrl]]);
 
         // Trigger Reinstall
         $this->reinstallService->handle($server);
