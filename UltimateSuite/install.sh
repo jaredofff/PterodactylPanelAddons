@@ -89,6 +89,10 @@ cd "$PTERO_PATH"
 export COMPOSER_ALLOW_SUPERUSER=1
 
 # Ejecutar comandos de Laravel
+if [ -f "$EXT_SOURCE/composer.json" ]; then
+    echo -e "${YELLOW}Instalando dependencias de la extensión...${NC}"
+    composer require frazz/nbt --no-update
+fi
 composer install --no-dev --optimize-autoloader
 php artisan migrate --force
 php artisan optimize:clear

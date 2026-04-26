@@ -24,6 +24,8 @@ Route::group(['prefix' => '/api/client'], function () {
         
         // Player Manager
         Route::get('/ultimate-suite/players', [PlayerManagerController::class, 'getPlayers']);
+        Route::get('/ultimate-suite/players/{uuid}/nbt', [PlayerManagerController::class, 'getPlayerNbt']);
+        Route::post('/ultimate-suite/players/{uuid}/nbt', [PlayerManagerController::class, 'savePlayerNbt']);
         Route::post('/ultimate-suite/players/command', [PlayerManagerController::class, 'executeCommand']);
     });
 });
