@@ -6,6 +6,8 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Services\Servers\ReinstallServerService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class VersionManagerService
 {
@@ -49,16 +51,53 @@ class VersionManagerService
         $this->reinstallService->handle($server);
     }
 
+    public function getAvailableTypes(): array
+    {
+        return Cache::remember('ultimate_suite_jar_types', 3600, function () {
+            $response = Http::get('https://mcjars.app/api/v1/types');
+            if ($response->successful()) {
+                return $response->json()['types'] ?? [];
+            }
+            return [];
+        });
+    }
+
+    public function getVersionsForType(string $type): array
+    {
+        $type = strtoupper($type);
+        return Cache::remember("ultimate_suite_jar_versions_{$type}", 3600, function () use ($type) {
+            $response = Http::get("https://mcjars.app/api/v2/builds/{$type}");
+            if ($response->successful()) {
+                $data = $response->json();
+                $builds = $data['builds'] ?? [];
+                
+                $versions = [];
+                foreach ($builds as $version => $info) {
+                    $versions[] = [
+                        'version' => $version,
+                        'is_latest' => false,
+                    ];
+                }
+                
+                return array_reverse($versions);
+            }
+            return [];
+        });
+    }
+
     /**
      * Logic to fetch download URL depending on type and version.
      */
     private function getDownloadUrl(string $type, string $version): string
     {
-        if ($type === 'paper') {
-            return "https://api.papermc.io/v2/projects/paper/versions/{$version}/builds/latest/downloads/paper-{$version}-latest.jar";
+        $type = strtoupper($type);
+        $response = Http::get("https://mcjars.app/api/v2/builds/{$type}");
+        
+        if ($response->successful()) {
+            $data = $response->json();
+            return $data['builds'][$version]['latest']['jarUrl'] ?? '';
         }
 
-        // Add Logic for Purpur, Fabric, Forge...
         return '';
     }
 }

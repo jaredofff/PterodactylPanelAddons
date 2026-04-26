@@ -18,6 +18,22 @@ class VersionManagerController extends ClientApiController
         $this->versionService = $versionService;
     }
 
+    public function getTypes(): JsonResponse
+    {
+        return new JsonResponse([
+            'success' => true,
+            'types' => $this->versionService->getAvailableTypes()
+        ]);
+    }
+
+    public function getVersions(string $type): JsonResponse
+    {
+        return new JsonResponse([
+            'success' => true,
+            'versions' => $this->versionService->getVersionsForType($type)
+        ]);
+    }
+
     /**
      * Updates server version and triggers a reinstall.
      */

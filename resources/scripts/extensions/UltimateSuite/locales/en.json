@@ -8,7 +8,10 @@
         "version": "Minecraft Version",
         "update_btn": "Update & Reinstall",
         "updating": "Updating...",
-        "success": "Server is updating and reinstalling."
+        "success": "Server is updating and reinstalling.",
+        "loading_types": "Loading types...",
+        "select_version": "Select a version",
+        "powered_by": "Powered by"
     },
     "player_manager": {
         "title": "Player Manager",

@@ -18,6 +18,8 @@ Route::group(['prefix' => '/api/client'], function () {
     // Server Specific Routes
     Route::group(['prefix' => '/servers/{server}'], function () {
         // Version Manager
+        Route::get('/ultimate-suite/version/types', [VersionManagerController::class, 'getTypes']);
+        Route::get('/ultimate-suite/version/types/{type}', [VersionManagerController::class, 'getVersions']);
         Route::post('/ultimate-suite/version', [VersionManagerController::class, 'updateVersion']);
         
         // Player Manager
