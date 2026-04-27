@@ -1,0 +1,22 @@
+{
+    "language_switcher": {
+        "title": "Seleccionar Idioma"
+    },
+    "version_manager": {
+        "title": "Gestor de Versiones",
+        "type": "Tipo de Servidor",
+        "version": "Versión de Minecraft",
+        "update_btn": "Actualizar y Reinstalar",
+        "updating": "Actualizando...",
+        "success": "El servidor se está actualizando y reinstalando.",
+        "loading_types": "Cargando tipos...",
+        "select_version": "Selecciona una versión",
+        "powered_by": "Desarrollado por"
+    },
+    "player_manager": {
+        "title": "Gestor de Jugadores",
+        "refresh": "Actualizar",
+        "loading": "Cargando jugadores...",
+        "no_players": "No hay jugadores en línea."
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "language_switcher": {
+        "title": "Select Language"
+    },
+    "version_manager": {
+        "title": "Version Manager",
+        "type": "Server Type",
+        "version": "Minecraft Version",
+        "update_btn": "Update & Reinstall",
+        "updating": "Updating...",
+        "success": "Server is updating and reinstalling.",
+        "loading_types": "Loading types...",
+        "select_version": "Select a version",
+        "powered_by": "Powered by"
+    },
+    "player_manager": {
+        "title": "Player Manager",
+        "refresh": "Refresh",
+        "loading": "Loading players...",
+        "no_players": "No players online."
+    }
+}
